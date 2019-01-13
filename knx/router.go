@@ -19,11 +19,15 @@ type RouterConfig struct {
 	// Specify how many sent messages to retain. This is important for when a router indicates that
 	// it has lost some messages. If you do not expect to saturate the router, keep this low.
 	RetainCount uint
+	// enable or disable multicast loopback to make it possible to have more listeners on same machine/interface.
+	// DO NOT USE FOR BRIDGE AS IT CAUSES A LOOP!
+	MulticastLoopback bool
 }
 
 // DefaultRouterConfig is a good default configuration for a Router client.
 var DefaultRouterConfig = RouterConfig{
-	RetainCount: 32,
+	RetainCount:       32,
+	MulticastLoopback: false,
 }
 
 // checkRouterConfig validates the given RouterConfig.
@@ -117,10 +121,13 @@ func (router *Router) serve() {
 	}
 }
 
+// AnyInterface is knxnet.AnyInterface.
+const AnyInterface string = knxnet.AnyInterface
+
 // NewRouter creates a new Router that joins the given multicast group. You may pass a
 // zero-initialized value as parameter config, the default values will be set up.
-func NewRouter(multicastAddress string, config RouterConfig) (*Router, error) {
-	sock, err := knxnet.ListenRouter(multicastAddress)
+func NewRouter(interfaceName string, multicastAddr string, config RouterConfig) (*Router, error) {
+	sock, err := knxnet.ListenRouter(interfaceName, multicastAddr, config.MulticastLoopback)
 	if err != nil {
 		return nil, err
 	}
@@ -182,8 +189,8 @@ type GroupRouter struct {
 }
 
 // NewGroupRouter creates a new Router for group communication.
-func NewGroupRouter(multicastAddress string, config RouterConfig) (gr GroupRouter, err error) {
-	gr.Router, err = NewRouter(multicastAddress, config)
+func NewGroupRouter(interfaceName string, multicastAddr string, config RouterConfig) (gr GroupRouter, err error) {
+	gr.Router, err = NewRouter(interfaceName, multicastAddr, config)
 
 	if err == nil {
 		gr.inbound = make(chan GroupEvent)

@@ -41,11 +41,11 @@ func (relay indRelay) relay(data cemi.LData) error {
 }
 
 func printUsage() {
-	fmt.Fprintf(os.Stderr, "Usage: %s <gateway addr> <other addr>\n", os.Args[0])
+	fmt.Fprintf(os.Stderr, "Usage: %s <gateway addr> <other addr> [interface]\n", os.Args[0])
 }
 
 func main() {
-	if len(os.Args) < 3 {
+	if len(os.Args) != 3 && len(os.Args) != 4 {
 		printUsage()
 		return
 	}
@@ -56,9 +56,14 @@ func main() {
 	gatewayAddr := os.Args[1]
 	otherAddr := os.Args[2]
 
+	interfaceName := knx.AnyInterface
+	if len(os.Args) == 4 {
+		interfaceName = os.Args[3]
+	}
+
 	// Loop for ever. Failures don't matter, we'll always retry.
 	for {
-		br, err := newBridge(gatewayAddr, otherAddr)
+		br, err := newBridge(interfaceName, gatewayAddr, otherAddr)
 		if err != nil {
 			logger.Printf("Error while creating: %v\n", err)
 
@@ -82,7 +87,7 @@ type bridge struct {
 	other  relay
 }
 
-func newBridge(gatewayAddr, otherAddr string) (*bridge, error) {
+func newBridge(interfaceName string, gatewayAddr, otherAddr string) (*bridge, error) {
 	// Instantiate tunnel connection.
 	tunnel, err := knx.NewTunnel(gatewayAddr, knxnet.TunnelLayerData, knx.DefaultTunnelConfig)
 	if err != nil {
@@ -99,7 +104,10 @@ func newBridge(gatewayAddr, otherAddr string) (*bridge, error) {
 
 	if addr.IP.IsMulticast() {
 		// Instantiate routing facilities.
-		router, err := knx.NewRouter(otherAddr, knx.DefaultRouterConfig)
+		config := knx.DefaultRouterConfig
+		config.MulticastLoopback = false
+
+		router, err := knx.NewRouter(interfaceName, otherAddr, config)
 		if err != nil {
 			tunnel.Close()
 			return nil, err

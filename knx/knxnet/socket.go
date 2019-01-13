@@ -4,6 +4,7 @@
 package knxnet
 
 import (
+	"golang.org/x/net/ipv4"
 	"net"
 	"time"
 
@@ -71,18 +72,38 @@ type RouterSocket struct {
 	inbound <-chan Service
 }
 
+// AnyInterface can be provided as an interface name if you don't want to specific which interface
+// shall be used.
+const AnyInterface string = ""
+
 // ListenRouter creates a new Socket which can be used to exchange KNXnet/IP packets with
 // multiple endpoints.
-func ListenRouter(multicastAddress string) (*RouterSocket, error) {
-	addr, err := net.ResolveUDPAddr("udp4", multicastAddress)
-	if err != nil {
-		return nil, err
+func ListenRouter(interfaceName string, multicastAddr string, multicastLoopback bool) (_ *RouterSocket, err error) {
+	var iface *net.Interface
+
+	if interfaceName != AnyInterface {
+		iface, err = net.InterfaceByName(interfaceName)
+		if err != nil {
+			return
+		}
 	}
 
-	conn, err := net.ListenMulticastUDP("udp4", nil, addr)
+	addr, err := net.ResolveUDPAddr("udp4", multicastAddr)
 	if err != nil {
-		return nil, err
+		return
 	}
+
+	conn, err := net.ListenUDP("udp4", addr)
+	if err != nil {
+		return
+	}
+	pc := ipv4.NewPacketConn(conn)
+	if err = pc.JoinGroup(iface, addr); err != nil {
+		return
+	}
+	// enable or disable multicast loopback to make it possible to have more listeners on same machine/interface.
+	// DO NOT USE FOR BRIDGE AS IT CAUSES A LOOP!
+	pc.SetMulticastLoopback(multicastLoopback)
 
 	conn.SetDeadline(time.Time{})
 

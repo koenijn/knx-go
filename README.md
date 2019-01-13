@@ -91,7 +91,7 @@ client, err := knx.NewGroupTunnel("10.0.0.7:3671", knx.DefaultTunnelConfig)
 with
 
 ```go
-client, err := knx.NewGroupRouter("224.0.23.12:3671", knx.DefaultRouterConfig)
+client, err := knx.NewGroupRouter(knx.AnyInterface, "224.0.23.12:3671", knx.DefaultRouterConfig)
 ```
 
 ### KNXnet/IP CEMI Client
