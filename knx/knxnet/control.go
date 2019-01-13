@@ -6,7 +6,7 @@ package knxnet
 import (
 	"errors"
 
-	"github.com/vapourismo/knx-go/knx/util"
+	"github.com/koenijn/knx-go/knx/util"
 )
 
 // TunnelLayer identifies the tunnelling layer for a tunnelling connection.

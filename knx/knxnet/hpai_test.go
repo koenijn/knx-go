@@ -9,7 +9,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/vapourismo/knx-go/knx/util"
+	"github.com/koenijn/knx-go/knx/util"
 )
 
 func TestAddress_String(t *testing.T) {

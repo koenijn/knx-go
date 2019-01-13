@@ -6,8 +6,8 @@ package knx
 import (
 	"testing"
 
-	"github.com/vapourismo/knx-go/knx/cemi"
-	"github.com/vapourismo/knx-go/knx/knxnet"
+	"github.com/koenijn/knx-go/knx/cemi"
+	"github.com/koenijn/knx-go/knx/knxnet"
 )
 
 func makeTunnelConn(

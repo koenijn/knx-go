@@ -7,7 +7,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/vapourismo/knx-go/knx/util"
+	"github.com/koenijn/knx-go/knx/util"
 )
 
 // A Socket is a socket, duh.

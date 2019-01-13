@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/vapourismo/knx-go.svg?branch=master)](https://travis-ci.org/vapourismo/knx-go)
-[![GoDoc](https://godoc.org/github.com/vapourismo/knx-go?status.svg)](https://godoc.org/github.com/vapourismo/knx-go)
+[![GoDoc](https://godoc.org/github.com/koenijn/knx-go?status.svg)](https://godoc.org/github.com/koenijn/knx-go)
 
 # knx-go
 
@@ -20,15 +20,15 @@ networks.
 
 Simply run the following command.
 
-	$ go get -u github.com/vapourismo/knx-go/...
+	$ go get -u github.com/koenijn/knx-go/...
 
 ## Examples
 
 ### KNXnet/IP Group Client
 
 If you simply want to send and receive group communication, the
-[GroupTunnel](https://godoc.org/github.com/vapourismo/knx-go/knx#GroupTunnel) or
-[GroupRouter](https://godoc.org/github.com/vapourismo/knx-go/knx#GroupRouter)
+[GroupTunnel](https://godoc.org/github.com/koenijn/knx-go/knx#GroupTunnel) or
+[GroupRouter](https://godoc.org/github.com/koenijn/knx-go/knx#GroupRouter)
 might be sufficient to you.
 
 ```go
@@ -38,10 +38,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/vapourismo/knx-go/knx"
-	"github.com/vapourismo/knx-go/knx/cemi"
-	"github.com/vapourismo/knx-go/knx/dpt"
-	"github.com/vapourismo/knx-go/knx/util"
+	"github.com/koenijn/knx-go/knx"
+	"github.com/koenijn/knx-go/knx/cemi"
+	"github.com/koenijn/knx-go/knx/dpt"
+	"github.com/koenijn/knx-go/knx/util"
 )
 
 func main() {
@@ -96,8 +96,8 @@ client, err := knx.NewGroupRouter("224.0.23.12:3671", knx.DefaultRouterConfig)
 
 ### KNXnet/IP CEMI Client
 
-Use [Tunnel](https://godoc.org/github.com/vapourismo/knx-go/knx#Tunnel) or
-[Router](https://godoc.org/github.com/vapourismo/knx-go/knx#Router) for finer control over the
+Use [Tunnel](https://godoc.org/github.com/koenijn/knx-go/knx#Tunnel) or
+[Router](https://godoc.org/github.com/koenijn/knx-go/knx#Router) for finer control over the
 communication with a gateway or router.
 
 ### KNX Bridge
